@@ -152,8 +152,8 @@ const Login: React.FC = () => {
 
             <div className="mt-6 pt-6 border-t border-border">
               <p className="text-xs text-center text-muted-foreground">
-                Não possui um Código T? Entre em contato com o time Prime para
-                solicitar acesso ao portal exclusivo.
+                Código T é o seu codigo de cliente TOTVS. Você pode verificar 
+                no seu contrato ou acessando a Central do Cliente.
               </p>
             </div>
           </motion.div>
