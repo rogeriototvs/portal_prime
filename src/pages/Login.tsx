@@ -69,14 +69,6 @@ const Login: React.FC = () => {
         >
           {/* Logo and title */}
           <div className="text-center mb-8">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', damping: 15 }}
-              className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary text-primary-foreground shadow-premium mb-6"
-            >
-              <span className="font-display font-bold text-3xl">P</span>
-            </motion.div>
             <h1 className="font-display text-3xl font-bold text-foreground mb-2">
               Prime Portal
             </h1>
