@@ -2,19 +2,17 @@
  * Portal Header Component
  * Premium header with logo, theme toggle, and user info
  */
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Sun, Moon, LogOut, Shield, MessageSquareText } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { FeedbackModal } from '@/components/portal/FeedbackModal';
 
 export const Header: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const { clientTCode, logoutClient, isAdminAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   const handleLogout = () => {
     logoutClient();
@@ -67,7 +65,7 @@ export const Header: React.FC = () => {
 
             {/* Feedback */}
             <button
-              onClick={() => setIsFeedbackOpen(true)}
+              onClick={() => navigate('/feedback')}
               className="flex items-center justify-center w-9 h-9 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
               title="Enviar elogio ou reclamação"
             >
@@ -98,14 +96,6 @@ export const Header: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {clientTCode && (
-        <FeedbackModal
-          isOpen={isFeedbackOpen}
-          onClose={() => setIsFeedbackOpen(false)}
-          tCode={clientTCode}
-        />
-      )}
     </motion.header>
   );
 };
