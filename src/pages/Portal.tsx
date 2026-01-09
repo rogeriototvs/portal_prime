@@ -89,8 +89,7 @@ const Portal: React.FC = () => {
             Bem-vindo ao Portal Prime
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Seu acesso exclusivo a recursos, documentação e suporte especializado
-            do time TOTVS Fluig Prime.
+            Seu acesso facilitado a informações, comunicados e recursos exclusivos.
           </p>
         </motion.div>
 
