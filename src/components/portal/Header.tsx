@@ -2,17 +2,19 @@
  * Portal Header Component
  * Premium header with logo, theme toggle, and user info
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sun, Moon, LogOut, Shield } from 'lucide-react';
+import { Sun, Moon, LogOut, Shield, MessageSquareText } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { FeedbackModal } from '@/components/portal/FeedbackModal';
 
 export const Header: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const { clientTCode, logoutClient, isAdminAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   const handleLogout = () => {
     logoutClient();
@@ -63,6 +65,15 @@ export const Header: React.FC = () => {
               <Shield className="w-4 h-4 text-muted-foreground" />
             </button>
 
+            {/* Feedback */}
+            <button
+              onClick={() => setIsFeedbackOpen(true)}
+              className="flex items-center justify-center w-9 h-9 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+              title="Enviar elogio ou reclamação"
+            >
+              <MessageSquareText className="w-4 h-4 text-muted-foreground" />
+            </button>
+
             {/* Theme toggle */}
             <button
               onClick={toggleTheme}
@@ -87,6 +98,14 @@ export const Header: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {clientTCode && (
+        <FeedbackModal
+          isOpen={isFeedbackOpen}
+          onClose={() => setIsFeedbackOpen(false)}
+          tCode={clientTCode}
+        />
+      )}
     </motion.header>
   );
 };

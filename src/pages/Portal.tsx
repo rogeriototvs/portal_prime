@@ -10,10 +10,14 @@ import {
   MessageSquare,
   BookOpen,
   HelpCircle,
+  Calendar,
+  ShieldCheck,
+  Mail,
   Sparkles,
   Heart,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/portal/Header';
 import { LinkCard } from '@/components/portal/LinkCard';
 import { CalendarSection } from '@/components/portal/CalendarSection';
@@ -51,6 +55,17 @@ const quickLinks = [
 const Portal: React.FC = () => {
   const { isClientAuthenticated, clientTCode } = useAuth();
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(true);
+  const [events, setEvents] = useState<
+    {
+      id: string;
+      title: string;
+      description: string | null;
+      location: string | null;
+      starts_at: string;
+      ends_at: string | null;
+    }[]
+  >([]);
+  const [isLoadingEvents, setIsLoadingEvents] = useState(false);
 
   // Redirect if not authenticated
   if (!isClientAuthenticated) {
@@ -60,6 +75,22 @@ const Portal: React.FC = () => {
   const handleViewAllAnnouncements = () => {
     setShowAnnouncementModal(true);
   };
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setIsLoadingEvents(true);
+      const { data } = await supabase
+        .from('events')
+        .select('id,title,description,location,starts_at,ends_at')
+        .eq('is_active', true)
+        .order('starts_at', { ascending: true })
+        .limit(5);
+      if (data) setEvents(data);
+      setIsLoadingEvents(false);
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -139,6 +170,97 @@ const Portal: React.FC = () => {
               transition={{ delay: 0.3 }}
             >
               <AnnouncementBanner onViewAll={handleViewAllAnnouncements} />
+            </motion.div>
+
+            {/* Audit Events Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 }}
+              className="premium-card"
+            >
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10">
+                    <ShieldCheck className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-semibold text-foreground">Eventos de Auditoria</h3>
+                    <p className="text-sm text-muted-foreground">Recurso Prime sob contratação</p>
+                  </div>
+                </div>
+                <span className="premium-badge whitespace-nowrap">Requer contratação</span>
+              </div>
+
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p>
+                  Registre alterações realizadas na plataforma em recursos como Papéis, Usuários,
+                  Grupos, Processos e Documentos, facilitando auditoria e rastreabilidade.
+                </p>
+                <div className="p-3 rounded-lg bg-muted/40 border border-border">
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground/70 mb-1">
+                    Disponibilidade
+                  </div>
+                  <div className="text-sm text-foreground">
+                    A partir da versão 1.6.4 (Waterdrop)
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg bg-muted/40 border border-border">
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground/70 mb-1">
+                    Como contratar
+                  </div>
+                  <a
+                    href="mailto:fluig.prime@fluig.com"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                  >
+                    <Mail className="w-4 h-4" />
+                    fluig.prime@fluig.com
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Events Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.48 }}
+              className="premium-card"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10">
+                  <Calendar className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-display font-semibold text-foreground">Eventos</h3>
+                  <p className="text-sm text-muted-foreground">Próximos eventos do Prime</p>
+                </div>
+              </div>
+
+              {isLoadingEvents ? (
+                <div className="text-sm text-muted-foreground">Carregando eventos...</div>
+              ) : events.length === 0 ? (
+                <div className="text-sm text-muted-foreground">Nenhum evento disponível no momento.</div>
+              ) : (
+                <div className="space-y-3">
+                  {events.map((eventItem) => (
+                    <div key={eventItem.id} className="p-3 rounded-lg bg-muted/40 border border-border">
+                      <div className="font-medium text-foreground">{eventItem.title}</div>
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {new Date(eventItem.starts_at).toLocaleString('pt-BR')}
+                        {eventItem.ends_at
+                          ? ` • até ${new Date(eventItem.ends_at).toLocaleString('pt-BR')}`
+                          : ''}
+                      </div>
+                      {(eventItem.location || eventItem.description) && (
+                        <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                          {eventItem.location ? `Local: ${eventItem.location}` : eventItem.description}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </motion.div>
 
             {/* Support Card */}

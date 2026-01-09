@@ -121,6 +121,80 @@ export type Database = {
           },
         ]
       }
+      events: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          ends_at: string | null
+          id: string
+          is_active: boolean | null
+          location: string | null
+          starts_at: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          starts_at: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          starts_at?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      feedback: {
+        Row: {
+          contact_email: string | null
+          created_at: string | null
+          id: string
+          kind: string
+          message: string
+          subject: string | null
+          t_code: string
+        }
+        Insert: {
+          contact_email?: string | null
+          created_at?: string | null
+          id?: string
+          kind: string
+          message: string
+          subject?: string | null
+          t_code: string
+        }
+        Update: {
+          contact_email?: string | null
+          created_at?: string | null
+          id?: string
+          kind?: string
+          message?: string
+          subject?: string | null
+          t_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_t_code_fkey"
+            columns: ["t_code"]
+            isOneToOne: false
+            referencedRelation: "authorized_codes"
+            referencedColumns: ["t_code"]
+          },
+        ]
+      }
       portal_settings: {
         Row: {
           id: string
